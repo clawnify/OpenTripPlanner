@@ -1,5 +1,7 @@
 # Open Trip Planner
 
+<img src="readme-banner.png" alt="Open Trip Planner preview" />
+
 Open-source **trip planner & map place tracker** — a self-hosted alternative to Wanderlog, TripIt, and Roadtrippers. Save the places you want to visit on an interactive map, track what you've seen and loved, and build day-by-day itineraries that draw your route across the map.
 
 > Built on the [Clawnify](https://clawnify.com) template format. Deploy your own copy in minutes, customize freely, own the data.
@@ -8,7 +10,7 @@ Open-source **trip planner & map place tracker** — a self-hosted alternative t
 
 ### Map
 - Full-bleed interactive map with every saved place as a **category-colored marker**
-- **Click anywhere to add a place** — the spot's address is reverse-geocoded and pre-filled
+- **Right-click anywhere to add a place** — the spot's address is reverse-geocoded and pre-filled
 - Marker popups show category, price, visited / favorite status, and a link
 - Floating **filter panel**: multi-select categories, favorites-only, not-visited-yet
 - Free **OpenStreetMap** tiles by default; set `MAPTILER_KEY` for crisper MapTiler tiles

@@ -84,8 +84,9 @@ INSERT INTO categories (name, color, icon)
 SELECT 'Food', '#EA580C', 'utensils'
 WHERE NOT EXISTS (SELECT 1 FROM categories);
 
+-- Sights, nature, nightlife — all things to do — collapse into one "Activities".
 INSERT INTO categories (name, color, icon)
-SELECT 'Sights', '#2563EB', 'landmark'
+SELECT 'Activities', '#FFFFFF', 'camera'
 WHERE (SELECT COUNT(*) FROM categories) = 1;
 
 INSERT INTO categories (name, color, icon)
@@ -93,20 +94,12 @@ SELECT 'Hotel', '#7C3AED', 'bed-double'
 WHERE (SELECT COUNT(*) FROM categories) = 2;
 
 INSERT INTO categories (name, color, icon)
-SELECT 'Nature', '#059669', 'trees'
-WHERE (SELECT COUNT(*) FROM categories) = 3;
-
-INSERT INTO categories (name, color, icon)
-SELECT 'Nightlife', '#DB2777', 'wine'
-WHERE (SELECT COUNT(*) FROM categories) = 4;
-
-INSERT INTO categories (name, color, icon)
 SELECT 'Shopping', '#D97706', 'shopping-bag'
-WHERE (SELECT COUNT(*) FROM categories) = 5;
+WHERE (SELECT COUNT(*) FROM categories) = 3;
 
 -- ── Seed: sample POIs in Lisbon (only on a fresh DB) ─────────────
 INSERT INTO pois (name, category_id, lat, lng, address, price, currency, visited, favorite, rating)
-SELECT 'Belém Tower', (SELECT id FROM categories WHERE name = 'Sights'), 38.6916, -9.2160, 'Av. Brasília, Lisbon', 8, 'EUR', 0, 1, 5
+SELECT 'Belém Tower', (SELECT id FROM categories WHERE name = 'Activities'), 38.6916, -9.2160, 'Av. Brasília, Lisbon', 8, 'EUR', 0, 1, 5
 WHERE NOT EXISTS (SELECT 1 FROM pois);
 
 INSERT INTO pois (name, category_id, lat, lng, address, price, currency, visited, favorite, rating)
@@ -114,11 +107,11 @@ SELECT 'Time Out Market', (SELECT id FROM categories WHERE name = 'Food'), 38.70
 WHERE (SELECT COUNT(*) FROM pois) = 1;
 
 INSERT INTO pois (name, category_id, lat, lng, address, price, currency, visited, favorite, rating)
-SELECT 'Jerónimos Monastery', (SELECT id FROM categories WHERE name = 'Sights'), 38.6979, -9.2065, 'Praça do Império, Lisbon', 10, 'EUR', 0, 0, 5
+SELECT 'Jerónimos Monastery', (SELECT id FROM categories WHERE name = 'Activities'), 38.6979, -9.2065, 'Praça do Império, Lisbon', 10, 'EUR', 0, 0, 5
 WHERE (SELECT COUNT(*) FROM pois) = 2;
 
 INSERT INTO pois (name, category_id, lat, lng, address, price, currency, visited, favorite, rating)
-SELECT 'Alfama', (SELECT id FROM categories WHERE name = 'Sights'), 38.7128, -9.1287, 'Alfama, Lisbon', NULL, 'EUR', 0, 1, 4
+SELECT 'Alfama', (SELECT id FROM categories WHERE name = 'Activities'), 38.7128, -9.1287, 'Alfama, Lisbon', NULL, 'EUR', 0, 1, 4
 WHERE (SELECT COUNT(*) FROM pois) = 3;
 
 INSERT INTO pois (name, category_id, lat, lng, address, price, currency, visited, favorite, rating)

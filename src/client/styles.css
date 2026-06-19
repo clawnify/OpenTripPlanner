@@ -157,24 +157,11 @@
 .leaflet-control-attribution a { color: var(--ring) !important; }
 
 /* Circular photo-preview pin — the place's image inside a category-coloured
- * ring, with a pointer tip. The map is the one place colour is data. */
+ * ring. Just a circle, no pointer tip. The map is the one place colour is data. */
 .poi-pin-wrap {
   position: relative;
   width: var(--pin-size, 42px);
   height: var(--pin-size, 42px);
-}
-.poi-pin-wrap::after { /* pointer tip — a diamond peeking out below the circle */
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -4px;
-  width: 12px;
-  height: 12px;
-  background: var(--pin);
-  transform: translateX(-50%) rotate(45deg);
-  border-radius: 0 0 3px 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  z-index: 0;
 }
 .poi-pin-circle {
   position: relative;
@@ -186,10 +173,10 @@
   height: 100%;
   box-sizing: border-box;
   border-radius: 9999px;
-  border: 3px solid var(--pin);
+  border: 2px solid var(--pin);      /* the ring IS the category (color = data); thin */
   background: var(--pin);
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 .poi-pin-img {
   width: 100%;
@@ -212,7 +199,7 @@
   width: 16px;
   height: 16px;
   border-radius: 9999px;
-  border: 2px solid var(--card);
+  border: 1.5px solid #fff;          /* decorative white keyline, thin */
   background: #047857;
   color: #fff;
   font: 700 9px/1 Inter, system-ui, sans-serif;
