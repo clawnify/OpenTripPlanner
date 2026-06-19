@@ -1,0 +1,220 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "leaflet/dist/leaflet.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Color tokens for trip / category dots referenced dynamically at runtime —
+   keep them emitted by Tailwind even though class names are composed in code. */
+@source inline("{bg,text,ring,border}-{sky,rose,amber,emerald,violet,fuchsia,teal,orange,slate}-{50,100,200,300,400,500,600,700,800}");
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  /* DESIGN-APPS rounded scale: sm=4px atoms, md=8px cards/popovers, lg=12px modals. */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+/* ── Light (default) — Clawnify Apps design tokens ──────────────── */
+:root {
+  --background: #f8f9fa;            /* app canvas */
+  --foreground: #1a202c;           /* ink */
+  --card: #ffffff;                 /* surface */
+  --card-foreground: #1a202c;
+  --popover: #ffffff;
+  --popover-foreground: #1a202c;
+  --primary: #dd5164;              /* Clawnify coral — the one CTA */
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;            /* surface-sunken */
+  --secondary-foreground: #1a202c;
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;     /* AA on surface-sunken */
+  --accent: #f1f5f9;
+  --accent-foreground: #1a202c;
+  --destructive: #b91c1c;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #2563eb;                 /* the only chromatic blue */
+  --radius: 0.625rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a202c;
+  --sidebar-accent: #f1f5f9;       /* active item: sunken fill, ink text */
+  --sidebar-accent-foreground: #1a202c;
+  --sidebar-border: #e2e8f0;
+}
+
+/* ── Dark — GitHub-dim palette via prefers-color-scheme ─────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d1117;
+    --foreground: #e6edf3;
+    --card: #161b22;
+    --card-foreground: #e6edf3;
+    --popover: #161b22;
+    --popover-foreground: #e6edf3;
+    --primary: #dd5164;            /* coral holds on dark, no inversion */
+    --primary-foreground: #ffffff;
+    --secondary: #1c2128;
+    --secondary-foreground: #e6edf3;
+    --muted: #1c2128;
+    --muted-foreground: #9ba7b3;
+    --accent: #1c2128;
+    --accent-foreground: #e6edf3;
+    --destructive: #f85149;
+    --destructive-foreground: #ffffff;
+    --border: #30363d;
+    --input: #30363d;
+    --ring: #4493f8;
+    --sidebar: #161b22;
+    --sidebar-foreground: #e6edf3;
+    --sidebar-accent: #1c2128;
+    --sidebar-accent-foreground: #e6edf3;
+    --sidebar-border: #30363d;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    font-feature-settings: "tnum" 1, "cv01" 1;
+  }
+}
+
+/* ── Agent mode: bump tap targets, never gate behind hover ───────── */
+[data-agent] button,
+[data-agent] [role="button"],
+[data-agent] a.button,
+[data-agent] input,
+[data-agent] select {
+  min-height: 40px;
+}
+
+/* ── Leaflet: blend tiles/controls into the design system ────────── */
+.leaflet-container {
+  background: var(--secondary);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  /* No text-selection highlight when clicking / dragging / right-clicking the map. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.leaflet-container:focus,
+.leaflet-container a:focus,
+.leaflet-marker-icon:focus,
+.leaflet-marker-icon:focus-visible { outline: none; }
+/* …but keep popup text selectable. */
+.leaflet-popup-content,
+.leaflet-popup-content * {
+  -webkit-user-select: text;
+  user-select: text;
+}
+.leaflet-control-zoom a,
+.leaflet-bar a {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+.leaflet-control-zoom a:hover { background: var(--secondary) !important; }
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+.leaflet-popup-content { margin: 0; }
+.leaflet-control-attribution {
+  background: color-mix(in srgb, var(--card) 80%, transparent) !important;
+  color: var(--muted-foreground) !important;
+}
+.leaflet-control-attribution a { color: var(--ring) !important; }
+
+/* Circular photo-preview pin — the place's image inside a category-coloured
+ * ring, with a pointer tip. The map is the one place colour is data. */
+.poi-pin-wrap {
+  position: relative;
+  width: var(--pin-size, 42px);
+  height: var(--pin-size, 42px);
+}
+.poi-pin-wrap::after { /* pointer tip — a diamond peeking out below the circle */
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 12px;
+  height: 12px;
+  background: var(--pin);
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 0 0 3px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 0;
+}
+.poi-pin-circle {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: 9999px;
+  border: 3px solid var(--pin);
+  background: var(--pin);
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+.poi-pin-img {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+.poi-pin-letter {
+  color: #fff;
+  font: 600 15px/1 Inter, system-ui, sans-serif;
+}
+.poi-pin-check {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  border: 2px solid var(--card);
+  background: #047857;
+  color: #fff;
+  font: 700 9px/1 Inter, system-ui, sans-serif;
+}
+.poi-pin-wrap.is-visited .poi-pin-circle { filter: saturate(0.65); opacity: 0.78; }

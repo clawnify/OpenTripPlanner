@@ -1,0 +1,58 @@
+{
+  "$schema": "https://app.clawnify.com/schema/v1/clawnify.json",
+  "version": 1,
+  "name": "Open Trip Planner",
+  "description": "Open-source, self-hosted trip planner and map place tracker — a Wanderlog / TripIt / Roadtrippers alternative. Save points of interest on an interactive map (category-colored markers, click-to-add with reverse geocoding), track which you've visited or favorited, and build day-by-day itineraries that draw your route on the map. Your agent can plan whole trips end to end through the app's JSON API — geocode an address, drop a place, then assemble days and ordered stops. Uses free OpenStreetMap tiles out of the box; set MAPTILER_KEY for crisper MapTiler tiles.",
+  "icon": "icon.svg",
+  "tags": [
+    "trip-planner",
+    "travel",
+    "itinerary",
+    "itinerary-planner",
+    "map",
+    "points-of-interest",
+    "place-tracker",
+    "leaflet",
+    "openstreetmap",
+    "tripit-alternative",
+    "wanderlog-alternative",
+    "roadtrippers-alternative"
+  ],
+  "app": {
+    "framework": "react+hono",
+    "database": true,
+    "storage": true
+  },
+  "env": {
+    "optional": ["MAPTILER_KEY"]
+  },
+  "deploy": {
+    "title": "Plan your next trip on a map",
+    "subtitle": "Like Wanderlog or TripIt — save places, build day-by-day itineraries",
+    "prompts": [
+      {
+        "key": "destinations",
+        "label": "Where are you headed?",
+        "placeholder": "e.g. Lisbon, then Porto",
+        "required": true
+      },
+      {
+        "key": "dates",
+        "label": "When are you travelling?",
+        "placeholder": "e.g. Sep 12–18, or just 'a long weekend'"
+      },
+      {
+        "key": "style",
+        "label": "What's your travel style?",
+        "type": "textarea",
+        "placeholder": "e.g. food-led and slow, lots of museums, mostly outdoors, on a budget..."
+      },
+      {
+        "key": "details",
+        "label": "Anything else?",
+        "type": "textarea",
+        "placeholder": "Must-see places, neighbourhoods to base in, home currency, brand colors..."
+      }
+    ]
+  }
+}
