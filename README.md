@@ -1,6 +1,6 @@
-# Open Trip Planner
-
 <img src="readme-banner.png" alt="Open Trip Planner preview" />
+
+# Open Trip Planner
 
 Open-source **trip planner & map place tracker** — a self-hosted alternative to Wanderlog, TripIt, and Roadtrippers. Save the places you want to visit on an interactive map, track what you've seen and loved, and build day-by-day itineraries that draw your route across the map.
 
