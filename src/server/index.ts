@@ -1,6 +1,7 @@
-import { Hono, type Context } from "hono";
+import { type Context } from "hono";
 import { z } from "zod";
-import { initDB, query, get, run } from "./db";
+import { createApp } from "@clawnify/app";
+import { query, get, run } from "./db";
 import { initUploads, putUpload, getUpload, deleteUpload } from "./uploads";
 
 type Env = {
@@ -11,10 +12,13 @@ type Env = {
   };
 };
 
-const app = new Hono<Env>();
+const app = createApp<Env>({
+  title: "Open Trip Planner",
+  version: "1.0.0",
+  description: "Map place tracker + day-by-day itinerary planner",
+});
 
 app.use("*", async (c, next) => {
-  initDB(c.env);
   initUploads(c.env.UPLOADS);
   await next();
 });
