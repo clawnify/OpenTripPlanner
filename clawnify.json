@@ -1,7 +1,7 @@
 {
   "$schema": "https://app.clawnify.com/schema/v1/clawnify.json",
   "version": 1,
-  "name": "Open Trip Planner",
+  "name": "OpenTripPlanner",
   "description": "Open-source, self-hosted trip planner and map place tracker — a Wanderlog / TripIt / Roadtrippers alternative. Save points of interest on an interactive map (category-colored markers, click-to-add with reverse geocoding), track which you've visited or favorited, and build day-by-day itineraries that draw your route on the map. Your agent can plan whole trips end to end through the app's JSON API — geocode an address, drop a place, then assemble days and ordered stops. Uses free OpenStreetMap tiles out of the box; set MAPTILER_KEY for crisper MapTiler tiles.",
   "icon": "icon.svg",
   "tags": [

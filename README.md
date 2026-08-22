@@ -1,6 +1,6 @@
-<img src="readme-banner.png" alt="Open Trip Planner preview" />
+<img src="readme-banner.png" alt="OpenTripPlanner preview" />
 
-# Open Trip Planner
+# OpenTripPlanner
 
 [![Deploy with Clawnify](https://app.clawnify.com/deploy-button.svg)](https://app.clawnify.com/deploy?repo=clawnify/open-trip-planner)
 

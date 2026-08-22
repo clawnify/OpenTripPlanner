@@ -1,4 +1,4 @@
-# Open Trip Planner — agent guide
+# OpenTripPlanner — agent guide
 
 This app is a **map-based trip planner and place tracker**. You plan trips for
 the user by calling its JSON API: geocode an address into coordinates, save it
