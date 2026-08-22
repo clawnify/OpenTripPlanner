@@ -13,7 +13,7 @@ type Env = {
 };
 
 const app = createApp<Env>({
-  title: "Open Trip Planner",
+  title: "OpenTripPlanner",
   version: "1.0.0",
   description: "Map place tracker + day-by-day itinerary planner",
 });
