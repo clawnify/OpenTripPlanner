@@ -3,6 +3,14 @@ import { z } from "zod";
 import { createApp } from "@clawnify/app";
 import { query, get, run } from "./db";
 import { initUploads, putUpload, getUpload, deleteUpload } from "./uploads";
+import {
+  DEFAULT_SETTINGS,
+  SEED_CATEGORIES,
+  SEED_POIS,
+  SEED_TRIP,
+  SEED_DAYS,
+  SEED_STOPS,
+} from "./seed";
 
 type Env = {
   Bindings: {
@@ -20,8 +28,91 @@ const app = createApp<Env>({
 
 app.use("*", async (c, next) => {
   initUploads(c.env.UPLOADS);
+  await ensureSeeded();
   await next();
 });
+
+// ── Seed ───────────────────────────────────────────────────────────
+// schema.sql is applied as DDL only by the Clawnify deploy pipeline, so the
+// default settings and the sample Lisbon trip are written from here instead.
+// Settings are upserted every time (they are load-bearing: the map centres on
+// them); the demo graph is only written into a database that is still empty,
+// so a redeploy never resurrects rows the user deleted.
+
+// One in-flight promise, not a boolean: the client opens with five parallel
+// API calls, and a boolean would let all five seed at once on a cold isolate.
+let seeded: Promise<void> | null = null;
+
+function ensureSeeded(): Promise<void> {
+  if (!seeded) {
+    seeded = seed().catch(() => {
+      seeded = null;
+    });
+  }
+  return seeded;
+}
+
+async function seed(): Promise<void> {
+  for (const [key, value] of DEFAULT_SETTINGS) {
+    await run("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)", [key, value]);
+  }
+
+  const counts = await get<{ categories: number; pois: number; trips: number }>(
+    `SELECT (SELECT COUNT(*) FROM categories) AS categories,
+            (SELECT COUNT(*) FROM pois) AS pois,
+            (SELECT COUNT(*) FROM trips) AS trips`,
+  );
+  if (counts && counts.categories === 0 && counts.pois === 0 && counts.trips === 0) {
+    await seedSampleTrip();
+  }
+}
+
+// Inserts parents first and reads their ids back, so every child row points at
+// a real parent instead of assuming the table started at id 1.
+async function seedSampleTrip(): Promise<void> {
+  for (const c of SEED_CATEGORIES) {
+    await run("INSERT INTO categories (name, color, icon) VALUES (?, ?, ?)", [c.name, c.color, c.icon]);
+  }
+  const categoryIds = await idsByName("SELECT id, name FROM categories");
+
+  for (const p of SEED_POIS) {
+    await run(
+      `INSERT INTO pois (name, category_id, lat, lng, address, price, currency, visited, favorite, rating)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [p.name, categoryIds.get(p.category) ?? null, p.lat, p.lng, p.address, p.price, p.currency, p.visited, p.favorite, p.rating],
+    );
+  }
+  const poiIds = await idsByName("SELECT id, name FROM pois");
+
+  await run(
+    `INSERT INTO trips (title, destination, start_date, end_date, notes, color)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [SEED_TRIP.title, SEED_TRIP.destination, SEED_TRIP.start_date, SEED_TRIP.end_date, SEED_TRIP.notes, SEED_TRIP.color],
+  );
+  const trip = await get<{ id: number }>("SELECT id FROM trips ORDER BY id DESC LIMIT 1");
+  if (!trip) return;
+
+  for (const d of SEED_DAYS) {
+    await run("INSERT INTO trip_days (trip_id, day_index, date, title) VALUES (?, ?, ?, ?)", [trip.id, d.day_index, d.date, d.title]);
+  }
+  const dayRows = await query<{ id: number; day_index: number }>("SELECT id, day_index FROM trip_days WHERE trip_id = ?", [trip.id]);
+  const dayIds = new Map(dayRows.map((r) => [r.day_index, r.id]));
+
+  for (const s of SEED_STOPS) {
+    const dayId = dayIds.get(s.day_index);
+    const poiId = poiIds.get(s.poi);
+    if (dayId === undefined || poiId === undefined) continue;
+    await run(
+      "INSERT INTO day_stops (day_id, poi_id, sort_order, arrive_time, duration_min) VALUES (?, ?, ?, ?, ?)",
+      [dayId, poiId, s.sort_order, s.arrive_time, s.duration_min],
+    );
+  }
+}
+
+async function idsByName(sql: string): Promise<Map<string, number>> {
+  const rows = await query<{ id: number; name: string }>(sql);
+  return new Map(rows.map((r) => [r.name, r.id]));
+}
 
 // ── Helpers ────────────────────────────────────────────────────────
 
