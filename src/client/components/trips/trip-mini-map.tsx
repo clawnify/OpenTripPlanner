@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { MapContainer, TileLayer, Marker, Polyline, Popup } from "react-leaflet";
+import { MapContainer, Marker, Polyline, Popup } from "react-leaflet";
+import { MapTiles } from "@/components/map/tile-layer";
 import { useApp } from "@/context";
 import { poiDivIcon } from "@/components/map/marker";
 import type { TripDay } from "@/types";
@@ -37,9 +38,9 @@ export function TripMiniMap({ days }: { days: TripDay[] }) {
   const line = points.map((p) => [p.lat, p.lng] as [number, number]);
 
   return (
-    <div className="h-64 w-full overflow-hidden rounded-md border">
+    <div className="relative h-64 w-full overflow-hidden rounded-md border">
       <MapContainer center={center} zoom={12} className="h-full w-full" scrollWheelZoom={false}>
-        <TileLayer url={mapConfig.tileUrl} attribution={mapConfig.attribution} />
+        <MapTiles url={mapConfig.tileUrl} attribution={mapConfig.attribution} />
         {points.length > 1 && (
           <Polyline positions={line} pathOptions={{ color: "#DD5164", weight: 3, opacity: 0.8, dashArray: "6 6" }} />
         )}

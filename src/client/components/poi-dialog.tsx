@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { Poi, GeocodeResult } from "@/types";
+import { ConfirmButton } from "@/components/confirm-button";
 
 export interface PoiDraft {
   lat?: number;
@@ -139,7 +140,6 @@ export function PoiDialog({ open, onOpenChange, poi, draft, onSaved }: Props) {
 
   async function remove() {
     if (!poi) return;
-    if (!confirm(`Delete "${poi.name}"?`)) return;
     try {
       await app.deletePoi(poi.id);
       onOpenChange(false);
@@ -285,9 +285,9 @@ export function PoiDialog({ open, onOpenChange, poi, draft, onSaved }: Props) {
 
         <DialogFooter className="mt-2">
           {poi && (
-            <Button type="button" variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={remove}>
+            <ConfirmButton variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive" prompt={`Delete "${poi.name}"?`} onConfirm={remove}>
               <Trash2 className="mr-1 h-4 w-4" /> Delete
-            </Button>
+            </ConfirmButton>
           )}
           <DialogClose asChild>
             <Button type="button" variant="outline">Cancel</Button>

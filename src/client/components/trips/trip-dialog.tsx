@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { Trip } from "@/types";
+import { ConfirmButton } from "@/components/confirm-button";
 
 interface Props {
   open: boolean;
@@ -63,7 +64,6 @@ export function TripDialog({ open, onOpenChange, trip, onDeleted }: Props) {
 
   async function remove() {
     if (!trip) return;
-    if (!confirm(`Delete "${trip.title}"? This removes its days and itinerary.`)) return;
     try {
       await app.deleteTrip(trip.id);
       onOpenChange(false);
@@ -130,9 +130,9 @@ export function TripDialog({ open, onOpenChange, trip, onDeleted }: Props) {
 
         <DialogFooter className="mt-2">
           {trip && (
-            <Button type="button" variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={remove}>
+            <ConfirmButton variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive" prompt={`Delete "${trip.title}" and its itinerary?`} onConfirm={remove}>
               <Trash2 className="mr-1 h-4 w-4" /> Delete
-            </Button>
+            </ConfirmButton>
           )}
           <DialogClose asChild>
             <Button type="button" variant="outline">Cancel</Button>

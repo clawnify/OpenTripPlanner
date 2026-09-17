@@ -54,7 +54,7 @@ pnpm typecheck
 pnpm build
 ```
 
-The dev script applies `src/server/schema.sql` to the local D1 database, then runs Vite and Wrangler in parallel. The schema seeds 6 categories, a sample "3 Days in Lisbon" trip, and 5 real Lisbon places so the app is usable on first boot.
+The dev script applies `schema.sql` to the local D1 database, then runs Vite and Wrangler in parallel. On the first request into an empty database the app writes 4 categories, a sample "3 Days in Lisbon" trip and 5 Lisbon places (`src/server/seed.ts`), so it is usable on first boot.
 
 ## Configuration
 
@@ -75,11 +75,12 @@ Or wire it up to Cloudflare Workers + D1 directly using the bindings in `wrangle
 ## Project layout
 
 ```
+schema.sql          Tables (DDL only)
 src/
   server/
     index.ts        Hono routes (config, geocode, categories, pois, trips, days, stops, settings, stats)
     db.ts           D1 adapter (query / get / run)
-    schema.sql      Tables + seed data
+    seed.ts         Sample data written into an empty database
   client/
     app.tsx         Shell + routing + agent-mode detection
     components/

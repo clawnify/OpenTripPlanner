@@ -6,10 +6,13 @@ import {
   Settings,
   Compass,
 } from "lucide-react";
+import { AppNav, embedded } from "@clawnify/app/client";
 import { cn } from "@/lib/utils";
 import type { Route } from "@/hooks/use-router";
 
 interface NavItem {
+  id: string;
+  hostIcon: string;
   label: string;
   icon: typeof MapIcon;
   path: string;
@@ -20,16 +23,16 @@ const sections: { heading: string; items: NavItem[] }[] = [
   {
     heading: "Plan",
     items: [
-      { label: "Map",    icon: MapIcon,   path: "/map",    match: (r) => r.name === "map" },
-      { label: "Trips",  icon: RouteIcon, path: "/trips",  match: (r) => r.name === "trips" || r.name === "trip" },
-      { label: "Places", icon: MapPin,    path: "/places", match: (r) => r.name === "places" },
+      { id: "map", hostIcon: "map", label: "Map",    icon: MapIcon,   path: "/map",    match: (r) => r.name === "map" },
+      { id: "trips", hostIcon: "calendar-days", label: "Trips",  icon: RouteIcon, path: "/trips",  match: (r) => r.name === "trips" || r.name === "trip" },
+      { id: "places", hostIcon: "star", label: "Places", icon: MapPin,    path: "/places", match: (r) => r.name === "places" },
     ],
   },
   {
     heading: "Manage",
     items: [
-      { label: "Categories", icon: Tags,     path: "/categories", match: (r) => r.name === "categories" },
-      { label: "Settings",   icon: Settings, path: "/settings",   match: (r) => r.name === "settings" },
+      { id: "categories", hostIcon: "tag", label: "Categories", icon: Tags,     path: "/categories", match: (r) => r.name === "categories" },
+      { id: "settings", hostIcon: "settings", label: "Settings",   icon: Settings, path: "/settings",   match: (r) => r.name === "settings" },
     ],
   },
 ];
@@ -41,6 +44,28 @@ export function Sidebar({
   route: Route;
   navigate: (to: string) => void;
 }) {
+  if (embedded) {
+    const active = sections.flatMap((s) => s.items).find((item) => item.match(route))?.id;
+    return (
+      <AppNav
+        title="Trip Planner"
+        icon="map"
+        active={active}
+        groups={sections.map((section, i) => ({
+          // The host already names the app, so the first group stays unlabelled.
+          label: i === 0 ? undefined : section.heading,
+          items: section.items.map((item) => ({
+            id: item.id,
+            label: item.label,
+            href: item.path,
+            icon: item.hostIcon,
+            home: item.id === "map",
+          })),
+        }))}
+        onNavigate={(item) => item.href && navigate(item.href)}
+      />
+    );
+  }
   return (
     <aside className="hidden w-60 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground md:flex">
       <div className="flex h-14 items-center gap-2 border-b px-4">
