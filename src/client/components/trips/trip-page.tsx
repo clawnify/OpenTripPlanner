@@ -6,6 +6,7 @@ import {
 import { useApp } from "@/context";
 import { cn, colorClasses, formatDate, formatDateRange, formatDuration } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ConfirmButton } from "@/components/confirm-button";
 import { Card } from "@/components/ui/card";
 import { CategoryChip } from "@/components/category-chip";
 import { TripDialog } from "./trip-dialog";
@@ -47,7 +48,6 @@ export function TripPage({ id, navigate }: { id: number; navigate: (to: string) 
   }
 
   async function deleteDay(dayId: number) {
-    if (!confirm("Delete this day and its stops?")) return;
     try {
       await app.deleteDay(dayId);
       await load();
@@ -231,9 +231,16 @@ function DayCard({
           <Button variant="ghost" size="sm" onClick={onAddStop} aria-label={`Add stop to day ${day.day_index}`}>
             <Plus className="mr-1 h-4 w-4" /> Stop
           </Button>
-          <Button variant="ghost" size="icon" aria-label={`Delete day ${day.day_index}`} onClick={onDeleteDay} className="text-muted-foreground hover:text-destructive">
+          <ConfirmButton
+            variant="ghost"
+            size="icon"
+            aria-label={`Delete day ${day.day_index}`}
+            prompt="Delete this day and its stops?"
+            onConfirm={onDeleteDay}
+            className="text-muted-foreground hover:text-destructive"
+          >
             <Trash2 className="h-4 w-4" />
-          </Button>
+          </ConfirmButton>
         </div>
       </div>
 

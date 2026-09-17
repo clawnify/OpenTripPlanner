@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { Category } from "@/types";
+import { ConfirmButton } from "@/components/confirm-button";
 
 export function CategoriesPage() {
   const app = useApp();
@@ -121,7 +122,6 @@ function CategoryDialog({
 
   async function remove() {
     if (!category) return;
-    if (!confirm(`Delete "${category.name}"? Places keep their data but lose this category.`)) return;
     try {
       await app.deleteCategory(category.id);
       onOpenChange(false);
@@ -188,9 +188,9 @@ function CategoryDialog({
 
         <DialogFooter className="mt-2">
           {category && (
-            <Button type="button" variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={remove}>
+            <ConfirmButton variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive" prompt={`Delete "${category.name}"? Places keep their data.`} onConfirm={remove}>
               <Trash2 className="mr-1 h-4 w-4" /> Delete
-            </Button>
+            </ConfirmButton>
           )}
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button type="button" onClick={save} disabled={saving || !name.trim()}>

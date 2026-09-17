@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { reportLocation } from "@clawnify/app/client";
 
 export type Route =
   | { name: "map" }
@@ -34,6 +35,11 @@ export function useRouter() {
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
   }, []);
+
+  // Report every route change so the workspace can reopen this screen on reload.
+  useEffect(() => {
+    reportLocation(path);
+  }, [path]);
 
   return { path, route: parse(path), navigate };
 }

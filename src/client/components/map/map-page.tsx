@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import { MapContainer, Marker, Popup, useMapEvents } from "react-leaflet";
+import { MapTiles } from "@/components/map/tile-layer";
 import { Plus, Star, Check, ExternalLink, Pencil, MapPinned } from "lucide-react";
 import { useApp } from "@/context";
 import { api } from "@/api";
@@ -96,7 +97,7 @@ export function MapPage() {
       <div className="relative flex-1">
         {mapConfig && (
           <MapContainer center={center} zoom={zoom} className="h-full w-full" scrollWheelZoom>
-            <TileLayer url={mapConfig.tileUrl} attribution={mapConfig.attribution} />
+            <MapTiles url={mapConfig.tileUrl} attribution={mapConfig.attribution} />
             <RightClickToAdd onPick={openFromMap} />
             {filtered.map((p) => (
               <Marker
