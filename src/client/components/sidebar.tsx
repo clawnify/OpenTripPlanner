@@ -6,7 +6,7 @@ import {
   Settings,
   Compass,
 } from "lucide-react";
-import { AppNav, embedded } from "@clawnify/app/client";
+import { AppNav } from "@clawnify/app/client";
 import { cn } from "@/lib/utils";
 import type { Route } from "@/hooks/use-router";
 
@@ -44,29 +44,27 @@ export function Sidebar({
   route: Route;
   navigate: (to: string) => void;
 }) {
-  if (embedded) {
-    const active = sections.flatMap((s) => s.items).find((item) => item.match(route))?.id;
-    return (
-      <AppNav
-        title="Trip Planner"
-        icon="map"
-        active={active}
-        groups={sections.map((section, i) => ({
-          // The host already names the app, so the first group stays unlabelled.
-          label: i === 0 ? undefined : section.heading,
-          items: section.items.map((item) => ({
-            id: item.id,
-            label: item.label,
-            href: item.path,
-            icon: item.hostIcon,
-            home: item.id === "map",
-          })),
-        }))}
-        onNavigate={(item) => item.href && navigate(item.href)}
-      />
-    );
-  }
+  const active = sections.flatMap((s) => s.items).find((item) => item.match(route))?.id;
+  // One <AppNav>: inside Clawnify the dashboard draws this navigation, and
+  // anywhere else the planner's own sidebar below is drawn from it.
   return (
+    <AppNav
+      title="Trip Planner"
+      icon="map"
+      active={active}
+      groups={sections.map((section, i) => ({
+        // The host already names the app, so the first group stays unlabelled.
+        label: i === 0 ? undefined : section.heading,
+        items: section.items.map((item) => ({
+          id: item.id,
+          label: item.label,
+          href: item.path,
+          icon: item.hostIcon,
+          home: item.id === "map",
+        })),
+      }))}
+      onNavigate={(item) => item.href && navigate(item.href)}
+      standalone={({ card }) => (
     <aside className="hidden w-60 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground md:flex">
       <div className="flex h-14 items-center gap-2 border-b px-4">
         <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
@@ -106,6 +104,9 @@ export function Sidebar({
           </div>
         ))}
       </nav>
+      {card && <div className="px-2 pb-2">{card}</div>}
     </aside>
+      )}
+    />
   );
 }
